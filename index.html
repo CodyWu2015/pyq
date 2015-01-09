@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Pyq by enlnt</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Pyq</h1>
+        <h2>pyq</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/enlnt/pyq/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/enlnt/pyq/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/enlnt/pyq" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2>
+<a id="pyq-python-interface-to-the-q-language" class="anchor" href="#pyq-python-interface-to-the-q-language" aria-hidden="true"><span class="octicon octicon-link"></span></a>PyQ: Python interface to the Q language</h2>
+
+<p>The following examples are adapted from the <a href="http://kx.com/q/d/primer.htm">Kdb+ Database and Language Primer</a>.</p>
+
+<pre><code>&gt;&gt;&gt; y = q('`aaa`bbbdef`c'); y[0]
+'aaa'
+</code></pre>
+
+<p>Unlike in Q, in python function call syntax uses <code>()</code> and
+indexing uses <code>[]</code>:</p>
+
+<pre><code>&gt;&gt;&gt; z = q('(`abc; 10 20 30; (`a; `b); 50 60 61)')
+&gt;&gt;&gt; z(2, 0)
+k('`a')
+&gt;&gt;&gt; z[q('0 2')] # XXX: Should be able to write this as z[0,2]
+k('(`abc;`a`b)')
+</code></pre>
+
+<h3>
+<a id="dictionaries" class="anchor" href="#dictionaries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dictionaries</h3>
+
+<pre><code>&gt;&gt;&gt; fruitcolor = q('`cherry`plum`tomato!`brightred`violet`brightred')
+&gt;&gt;&gt; fruitcolor['plum']
+k('`violet')
+&gt;&gt;&gt; fruitcolor2 = q('`grannysmith`plum`prune!`green`reddish`black')
+&gt;&gt;&gt; q(',', fruitcolor, fruitcolor2)
+k('`cherry`plum`tomato`grannysmith`prune!`brightred`reddish`brightred`green`black')
+</code></pre>
+
+<h3>
+<a id="tables-from-dictionaries" class="anchor" href="#tables-from-dictionaries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tables from Dictionaries</h3>
+
+<pre><code>&gt;&gt;&gt; d = q('`name`salary! (`tom`dick`harry;30 30 35) ')
+&gt;&gt;&gt; e = q.flip(d)
+&gt;&gt;&gt; e[1]
+k('`name`salary!(`dick;30)')
+&gt;&gt;&gt; q('{select name from x}', e)
+k('+(,`name)!,`tom`dick`harry')
+&gt;&gt;&gt; q('{select sum salary from x}', e).salary
+k(',95')
+
+&gt;&gt;&gt; e2 = q.xkey('name', e)
+&gt;&gt;&gt; q('+', e2, e2)
+k('(+(,`name)!,`tom`dick`harry)!+(,`salary)!,60 60 70')
+&gt;&gt;&gt; q.keys(e2)
+k(',`name')
+&gt;&gt;&gt; q.cols(e2)
+k('`name`salary')
+</code></pre>
+
+<h3>
+<a id="temporal-primitives" class="anchor" href="#temporal-primitives" aria-hidden="true"><span class="octicon octicon-link"></span></a>Temporal Primitives</h3>
+
+<pre><code>&gt;&gt;&gt; x = datetime(2004,7,3,16,35,24,980000)
+&gt;&gt;&gt; K(x)
+k('2004.07.03D16:35:24.980000000')
+&gt;&gt;&gt; K(x.date()), K(x.time())
+(k('2004.07.03'), k('16:35:24.980'))
+&gt;&gt;&gt; K(timedelta(200,200,200))
+k('200D00:03:20.000200000')
+</code></pre>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
