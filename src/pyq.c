@@ -174,7 +174,6 @@ main(int argc, char *argv[])
     {
       snprintf(buf, 1024, "%s", PYTHON32_SRC_DIR);
     }
-    printf("buf=%s\n", buf);
     setenv("LD_LIBRARY_PATH", buf, 1);
     setenv("PYTHONHOME", PYTHON32_SRC_DIR, 1);
 
