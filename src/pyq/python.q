@@ -1,6 +1,6 @@
 #! /usr/bin/env q
 PYVER:"2.7"
-PYSO:`py
+PYSO:`$":",(getenv `PYQ_SRC_DIR),"/install/pyq/py"
 SOEXT:".so\000"
 lib:"libpython",PYVER,SOEXT
 

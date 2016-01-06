@@ -20,7 +20,11 @@ static char progpath[1024];
 static uint32_t nsexeclength = 1024;
 #endif
 #ifdef __linux__
+#ifdef QBITS
+#define QBIN "/" QBITS "/q"
+#else
 #define QBIN "/l64/q"
+#endif
 #include <sched.h>
 
 static cpu_set_t cpu_set;
@@ -142,7 +146,7 @@ main(int argc, char *argv[])
 #else
     args[0] = argv[0];
 #endif
-    args[1] = "python.q";
+    args[1] = PYQ_SRC_DIR"/install/pyq/python.q";
     args[argc + 1] = "-q";
     args[argc + 2] = NULL;
     for (i = 1; i < argc; ++i) {
@@ -159,6 +163,34 @@ main(int argc, char *argv[])
 #ifdef __linux__
     taskset();
 #endif
+    // set LD_LIBRARY_PATH
+    char * pValue = getenv("LD_LIBRARY_PATH");
+    char buf[1024];
+    if(pValue)
+    {
+      snprintf(buf, 1024, "%s:%s", pValue, PYTHON32_SRC_DIR);
+    }
+    else
+    {
+      snprintf(buf, 1024, "%s", PYTHON32_SRC_DIR);
+    }
+    printf("buf=%s\n", buf);
+    setenv("LD_LIBRARY_PATH", buf, 1);
+    setenv("PYTHONHOME", PYTHON32_SRC_DIR, 1);
+
+    pValue = getenv("PYTHONPATH");
+    if(pValue)
+    {
+      snprintf(buf, 1024, "%s:%s", pValue, PYTHON32_SRC_DIR"/Lib:"PYTHON32_SRC_DIR"/build/lib.linux-x86_64-2.7:"PYQ_SRC_DIR"/install");
+    }
+    else
+    {
+      snprintf(buf, 1024, "%s", PYTHON32_SRC_DIR"/Lib:"PYTHON32_SRC_DIR"/build/lib.linux-x86_64-2.7:"PYQ_SRC_DIR"/install");
+    }
+    setenv("PYTHONPATH", buf, 1);
+
+    setenv("PYQ_SRC_DIR", PYQ_SRC_DIR, 1);
+
     rc = execvp(qpath, args);
     /* we can only get here on error */
     perror(argv[0]);
